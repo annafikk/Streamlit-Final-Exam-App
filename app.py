@@ -1,6 +1,7 @@
 # Import Library Python
 import streamlit as st
 import datetime as dt
+from PIL import Image
 
 # Library Visualisasi Data
 import pandas as pd
@@ -144,6 +145,10 @@ def informasi():
         '''
     )
 
+    st.subheader('Skala Kesehatan Mental')
+    image = Image.open('./img/mental_health_score.png')
+    st.image(image, caption='Skala Kesehatan Mental')
+
 # Halaman Dataset
 def dataset():
     st.cache_data
@@ -266,13 +271,13 @@ def pertanyaan():
     average = sum(answers) / len(answers)
 
     st.markdown('##')
-    st.write(f"Your average mental health score today is {average:.1f}")
+    st.write(f"Skor Rata-Rata Kesehatan Mental Kamu Hari Ini : {average:.1f}")
 
     fig = go.Figure(go.Indicator(
         domain={'x': [0, 1], 'y': [0, 1]},
         value=average,
         mode="gauge+number",
-        title={'text': "Mental Health Score"},
+        title={'text': "Skor Kesehatan Mental"},
         gauge={
             'axis': {'range': [0, 10]},
             'steps': [
@@ -288,12 +293,12 @@ def pertanyaan():
 
     st.plotly_chart(fig, use_container_width=True, height=50)
 
-    if st.button('Submit to your daily MindLens tracker'):
+    if st.button('Kirim Hasil Skor Kamu'):
         now = dt.now()
         date_string = now.strftime('%Y-%m-%d')
         st.write(f"Date: {date_string}")
         add_data(date_string, answers, average)
-        st.write("Your mental health check-in has been submitted!")
+        st.write("Skor Kesehatan Mental Kamu Telah Berhasil Di Kirim!")
 
     st.write("")
     st.write("Apakah Anda ingin mengaktifkan notifikasi pengingat?")
@@ -303,7 +308,7 @@ def pertanyaan():
 
     return answers
 
-# Visualisasi Data
+# Halaman Visualisasi Data
 def visualisasi():
     scope = ['https://www.googleapis.com/auth/spreadsheets']
     creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
@@ -317,6 +322,7 @@ def visualisasi():
     df = pd.DataFrame(data[1:], columns=data[0])
 
     st.subheader('Visualisasi Data Kesehatan Mental')
+    st.info('Scroll Ke Bawah Untuk Melihat Hasil Selengkapnya')
     st.dataframe(df)
 
     fig1 = px.line(df, x="date", y="rata-rata", line_shape="spline", color_discrete_sequence=["red"])
@@ -345,15 +351,56 @@ def visualisasi():
     show_alert(total_average)
     return total_average
 
-# Forum Diskusi
+# Halaman Forum Diskusi
 def diskusi():
+    from datetime import datetime
     st.title('Forum Diskusi Kesehatan Mental')
     st.write('Selamat datang di forum diskusi! Silakan berbagi pengalaman Anda atau tanyakan sesuatu kepada komunitas.')
-    user_input = st.text_area('Tulis komentar atau pertanyaan Anda di sini')
+
+    username = st.text_input("Nama Pengguna", value="")
+    userinput = st.text_area('Tulis komentar atau pertanyaan Anda di sini')
 
     if st.button('Kirim'):
-        st.write('Komentar Anda telah terkirim!')
+        if not username or not userinput:
+            st.warning("Harap isi kedua kotak teks sebelum mengirim!")
+        else:
+            # Tanggal dan waktu pesan dikirim
+            sent_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+            # Menambahkan pesan ke Google Spreadsheet Sheet2
+            scope = ['https://www.googleapis.com/auth/spreadsheets']
+            creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
+            client = gspread.authorize(creds)
+
+            url = "https://docs.google.com/spreadsheets/d/16U04JNWR9Qaib0zoxmzwUtxfYusexja7VYQdatsbmNQ/edit?usp=sharing"
+            sheet_name = "Sheet2"
+
+            sheet = client.open_by_url(url).worksheet(sheet_name)
+            row_to_append = [sent_time, username, userinput]
+            sheet.append_row(row_to_append)
+            st.write("Pesan Anda telah terkirim!")
+    
+    # Menampilkan pesan yang telah dikirim oleh pengguna sebelumnya
+    st.subheader('Pesan yang Telah Dikirim')
+    scope = ['https://www.googleapis.com/auth/spreadsheets']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
+    client = gspread.authorize(creds)
+
+    url = "https://docs.google.com/spreadsheets/d/16U04JNWR9Qaib0zoxmzwUtxfYusexja7VYQdatsbmNQ/edit?usp=sharing"
+    sheet_name = "Sheet2"
+
+    sheet = client.open_by_url(url).worksheet(sheet_name)
+    data = sheet.get_all_values()
+
+    # Menampilkan pesan yang dikirim dalam bentuk dataframe
+    df_messages = pd.DataFrame(data[1:], columns=data[0])
+
+    # Menampilkan pesan dalam bentuk chat message
+    for index, row in df_messages.iterrows():
+        with st.expander(f"{row[0]} - {row[1]}:", expanded=True):
+            st.write(row[2])
+
+# Halaman Help Center
 def bundir():
     st.title('Kamu Tidak Sendiri')
     st.write(
