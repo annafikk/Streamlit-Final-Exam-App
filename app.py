@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import seaborn as sns
 
+# Library Sentiment
+
+
 # Library Database Spreadsheet
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -164,6 +167,12 @@ def dataset():
     # Mengubah kolom Timestamp menjadi tipe data datetime
     data['Timestamp'] = pd.to_datetime(data['Timestamp'])
 
+    # =========================================> Filter
+    selected_columns = ['Age', 'Gender', 'Country', 'treatment', 'seek_help', 'mental_health_consequence']
+    new_table = data[selected_columns]
+    st.subheader('Data Survei yang Telah Difilter')
+    st.write(new_table)
+
     # =========================================> Usia
     with st.expander('Responden Berdasarkan Usia'):
         # Memecah menjadi beberapa kategori usia
@@ -173,6 +182,11 @@ def dataset():
 
         age_group_counts = data['Age_Group'].value_counts()
         age_group_counts = age_group_counts.reindex(labels)
+
+        data_dict = {'Usia': age_group_counts.index, 'Jumlah Responden': age_group_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Usia')
+        st.table(df)
 
         st.subheader('Grafik Responden Berdasarkan Usia')
         fig, ax = plt.subplots()
@@ -184,14 +198,22 @@ def dataset():
     # =========================================> Gender
     with st.expander('Responden Berdasarkan Jenis Kelamin'):
         # Grafik Berdasarkan Jenis Kelamin Keseluruhan
-        st.subheader('Grafik Responden Berdasarkan Jenis Kelamin')
         gender_counts = data['Gender'].value_counts()
+
+        st.subheader('Grafik Responden Berdasarkan Jenis Kelamin')
         st.bar_chart(gender_counts)
+
 
         # Filter Grafik Hanya Untuk Male dan Female
         filtered_data = data[data['Gender'].isin(['Male', 'Female'])]
-        st.subheader('Grafik Responden Berdasarkan Jenis Kelamin (M/F)')
         gender_counts = filtered_data['Gender'].value_counts()
+
+        data_dict = {'Jenis Kelamin': gender_counts.index, 'Jumlah Responden': gender_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Jenis Kelamin')
+        st.table(df)
+
+        st.subheader('Grafik Responden Berdasarkan Jenis Kelamin (M/F)')
         fig, ax = plt.subplots()
         ax.pie(gender_counts, labels=gender_counts.index, autopct='%1.1f%%')
         st.pyplot(fig)
@@ -199,6 +221,11 @@ def dataset():
     # =========================================> Self Employed
     with st.expander('Responden Berdasarkan Jenis Pekerjaan (Wiraswasta)'):
         self_employed_counts = data['self_employed'].value_counts()
+        data_dict = {'Wiraswasta': self_employed_counts.index, 'Jumlah Responden': self_employed_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Pekerjaan Wiraswasta')
+        st.table(df)
+
         st.subheader('Apakah Pekerjaan Responden Wiraswasta?')
         fig, ax = plt.subplots()
         ax.pie(self_employed_counts, labels=self_employed_counts.index, autopct='%1.1f%%')
@@ -206,7 +233,7 @@ def dataset():
 
     # =========================================> Negara
     with st.expander('Responden Berdasarkan Negara'):
-        st.subheader('Grafik Asal Negara dan Jumlah Responden')
+        st.subheader('Tabel Asal Negara dan Jumlah Responden')
         country_counts = data['Country'].value_counts()
         country_data = pd.DataFrame({'Negara': country_counts.index, 'Jumlah Responden': country_counts.values})
         st.write(country_data)
@@ -219,14 +246,26 @@ def dataset():
 
     # =========================================> Treatment
     with st.expander('Responden Berdasarkan Treatment'):
-        st.subheader('Grafik untuk Persentase Perlakuan (Treatment)')
+        treatment_counts = data['treatment'].value_counts()
+        data_dict = {'Treatment': treatment_counts.index, 'Jumlah Responden': treatment_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Perlakuan (Treatment)')
+        st.table(df)
+
         treatment_counts = data['treatment'].value_counts(normalize=True) * 100
+        st.subheader('Grafik untuk Persentase Perlakuan (Treatment)')
         fig, ax = plt.subplots()
         ax.pie(treatment_counts, labels=treatment_counts.index, autopct='%1.1f%%')
         st.pyplot(fig)
 
     # =========================================> Seek Help
     with st.expander('Responden yang Mencari Bantuan'):
+        seek_help_counts = data['seek_help'].value_counts()
+        data_dict = {'Mencari Bantuan': seek_help_counts.index, 'Jumlah Responden': seek_help_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden yang Mencari Bantuan dalam Kesehatan Mental Mereka')
+        st.table(df)
+
         st.subheader('Grafik untuk Responden yang Mencari Bantuan dalam Kesehatan Mental Mereka')
         seek_help_counts = data['seek_help'].value_counts(normalize=True) * 100
         fig, ax = plt.subplots()
@@ -236,6 +275,12 @@ def dataset():
 
     # =========================================> Mental Health Consequence
     with st.expander('Responden yang Memiliki Konsekuensi Kesehatan Mental'):
+        mental_health_consequence_counts = data['mental_health_consequence'].value_counts()
+        data_dict = {'Konsekuensi': mental_health_consequence_counts.index, 'Jumlah Responden': mental_health_consequence_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Konsekuensi')
+        st.table(df)
+
         st.subheader('Grafik untuk Responden yang Memiliki Konsekuensi Kesehatan Mental')
         mental_health_consequence_counts = data['mental_health_consequence'].value_counts(normalize=True) * 100
         fig, ax = plt.subplots()
@@ -243,11 +288,116 @@ def dataset():
         ax.set_title('Mental Health Consequence')
         st.pyplot(fig)
 
+def dataset2():
+    st.cache_data
+    def load_data():
+        df = pd.read_csv("dataset\student-mental-health.csv")
+        return df
+
+    # Memuat dan Menampilkan Dataset
+    data = load_data()
+    st.subheader('Data Mentah Kesehatan Mental pada Mahasiswa')
+    st.write(data)
+
     # =========================================> Filter
-    selected_columns = ['Age', 'Gender', 'Country', 'treatment', 'seek_help', 'mental_health_consequence']
+    selected_columns = ['Gender', 'Age', 'Course', 'Current_Year', 'Depression', 'Anxiety', 'Panic_Attack', 'Seek_Specialist']
     new_table = data[selected_columns]
-    st.subheader('Data Survei yang Telah Difilter')
+    st.subheader('Data yang Telah Difilter')
     st.write(new_table)
+
+    # =========================================> Usia
+    with st.expander('Responden Berdasarkan Usia'):
+        bins = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+        labels = ['17', '18', '19', '20', '21', '22', '23', '24', '25']
+        data['Age'] = pd.cut(data['Age'], bins=bins, labels=labels, right=False)
+
+        age_group_counts = data['Age'].value_counts()
+        age_group_counts = age_group_counts.reindex(labels)
+
+        st.subheader('Tabel Responden Berdasarkan Usia')
+        data_dict = {'Usia': age_group_counts.index, 'Jumlah Responden': age_group_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.table(df)
+
+        st.subheader('Grafik Responden Berdasarkan Usia')
+        fig, ax = plt.subplots()
+        age_group_counts.plot(kind='bar', ax=ax)
+        ax.set_xlabel('Kelompok Usia')
+        ax.set_ylabel('Jumlah Responden')
+        st.pyplot(fig)
+
+    # =========================================> Gender
+    with st.expander('Responden Berdasarkan Jenis Kelamin'):
+        Gender_counts = data['Gender'].value_counts()
+        data_dict = {'Jenis Kelamin': Gender_counts.index, 'Jumlah Responden': Gender_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Jumlah Responden Berdasarkan Jenis Kelamin')
+        st.table(df)
+
+        st.subheader('Grafik Responden Berdasarkan Jenis Kelamin')
+        st.bar_chart(Gender_counts)
+
+    # =========================================> Jurusan
+    with st.expander('Responden Berdasarkan Jurusan'):
+        Course_counts = data['Course'].value_counts()
+        data_dict = {'Jurusan': Course_counts.index, 'Jumlah Responden': Course_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Jumlah Responden Berdasarkan Jurusan')
+        st.table(df)
+
+    # =========================================> Tahun Kuliah
+    with st.expander('Responden Berdasarkan Tahun Kuliah'):
+        st.subheader('Tabel Jumlah Responden Berdasarkan Tahun Kuliah')
+        Current_Year_counts = data['Current_Year'].value_counts()
+        Current_Year_data = pd.DataFrame({'Tahun Kuliah': Current_Year_counts.index, 'Jumlah Responden': Current_Year_counts.values})
+        st.write(Current_Year_data)
+
+        # Persentase Responden dari Tahun Kuliah
+        st.subheader('Grafik untuk Persentase Tahun Kuliah dari Responden')
+        fig, ax = plt.subplots()
+        ax.pie(Current_Year_counts, labels=Current_Year_counts.index, autopct='%1.1f%%')
+        st.pyplot(fig)
+
+    # =========================================> Depresi
+    with st.expander('Responden yang Memiliki Depresi'):
+        Depression_counts = data['Depression'].value_counts(normalize=True) * 100
+        data_dict = {'Depresi': Depression_counts.index, 'Jumlah Responden': Depression_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Depresi')
+        st.table(df)
+
+        fig, ax = plt.subplots()
+        ax.pie(Depression_counts, labels=Depression_counts.index, autopct='%1.1f%%')
+        st.subheader('Apakah Responden Mengalami Depresi?')
+        st.pyplot(fig)
+
+    # =========================================> Anxiety
+    with st.expander('Responden yang Memiliki Anxiety'):
+        Anxiety_counts = data['Anxiety'].value_counts(normalize=True) * 100
+        data_dict = {'Depresi': Anxiety_counts.index, 'Jumlah Responden': Anxiety_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Anxiety')
+        st.table(df)
+
+        fig, ax = plt.subplots()
+        ax.pie(Anxiety_counts, labels=Anxiety_counts.index, autopct='%1.1f%%')
+        st.subheader('Apakah Responden Mengalami Anxiety?')
+        ax.set_title('Anxiety')
+        st.pyplot(fig)
+
+    # =========================================> Panic_Attack
+    with st.expander('Responden yang Memiliki Serangan Kecemasan'):
+        Panic_Attack_counts = data['Panic_Attack'].value_counts(normalize=True) * 100
+        data_dict = {'Serangan Kecemasan': Panic_Attack_counts.index, 'Jumlah Responden': Panic_Attack_counts.values}
+        df = pd.DataFrame(data_dict)
+        st.subheader('Tabel Responden Berdasarkan Serangan Kecemasan')
+        st.table(df)
+        
+        fig, ax = plt.subplots()
+        ax.pie(Panic_Attack_counts, labels=Panic_Attack_counts.index, autopct='%1.1f%%')
+        st.subheader('Apakah Responden Mengalami Serangan Kecemasan?')
+        ax.set_title('Panic Attack')
+        st.pyplot(fig)
 
 # Halaman Kuisioner
 def pertanyaan():
@@ -295,10 +445,11 @@ def pertanyaan():
 
     if st.button('Kirim Hasil Skor Kamu'):
         now = dt.now()
-        date_string = now.strftime('%Y-%m-%d')
+        date_string = now.strftime('%d/%m/%Y')
         st.write(f"Date: {date_string}")
         add_data(date_string, answers, average)
-        st.write("Skor Kesehatan Mental Kamu Telah Berhasil Di Kirim!")
+        st.success("Skor Kesehatan Mental Kamu Telah Berhasil Di Kirim!", TimeoutError)
+        st.toast("Terkirim!")
 
     st.write("")
     st.write("Apakah Anda ingin mengaktifkan notifikasi pengingat?")
@@ -310,6 +461,7 @@ def pertanyaan():
 
 # Halaman Visualisasi Data
 def visualisasi():
+    st.cache_data
     scope = ['https://www.googleapis.com/auth/spreadsheets']
     creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
     client = gspread.authorize(creds)
@@ -351,8 +503,15 @@ def visualisasi():
     show_alert(total_average)
     return total_average
 
+from transformers import pipeline
+sentiment_analysis = pipeline("sentiment-analysis")
+def analyze_sentiment(text):
+    result = sentiment_analysis(text)
+    return result[0]['label']
+
 # Halaman Forum Diskusi
 def diskusi():
+    st.cache_data
     from datetime import datetime
     st.title('Forum Diskusi Kesehatan Mental')
     st.write('Selamat datang di forum diskusi! Silakan berbagi pengalaman Anda atau tanyakan sesuatu kepada komunitas.')
@@ -364,10 +523,9 @@ def diskusi():
         if not username or not userinput:
             st.warning("Harap isi kedua kotak teks sebelum mengirim!")
         else:
-            # Tanggal dan waktu pesan dikirim
             sent_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            sentiment = analyze_sentiment(userinput)
 
-            # Menambahkan pesan ke Google Spreadsheet Sheet2
             scope = ['https://www.googleapis.com/auth/spreadsheets']
             creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
             client = gspread.authorize(creds)
@@ -376,7 +534,7 @@ def diskusi():
             sheet_name = "Sheet2"
 
             sheet = client.open_by_url(url).worksheet(sheet_name)
-            row_to_append = [sent_time, username, userinput]
+            row_to_append = [sent_time, username, userinput, sentiment]
             sheet.append_row(row_to_append)
             st.write("Pesan Anda telah terkirim!")
     
@@ -397,8 +555,9 @@ def diskusi():
 
     # Menampilkan pesan dalam bentuk chat message
     for index, row in df_messages.iterrows():
-        with st.expander(f"{row[0]} - {row[1]}:", expanded=True):
-            st.write(row[2])
+        with st.expander(f"Diposting Pada {row[0]} oleh : {row[1]}", expanded=True):
+            st.write(f"Pesan: {row[2]}")
+            st.write(f"Sentimen: {row[3]}")
 
 # Halaman Help Center
 def bundir():
@@ -458,7 +617,8 @@ def bundir():
 nama_halaman = {
     'Beranda': intro,
     'Informasi Umum': informasi,
-    'Dataset': dataset,
+    'Hasil Survei': dataset,
+    'Data Mahasiswa': dataset2,
     'Kuisioner': pertanyaan,
     'Visualisasi': visualisasi,
     'Forum Diskusi': diskusi,
