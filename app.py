@@ -3,15 +3,15 @@ import streamlit as st
 import datetime as dt
 from PIL import Image
 
+# Konfigurasi Icon dan Judul Halaman
+st.set_page_config(page_icon=':mending_heart:', page_title='TATA')
+
 # Library Visualisasi Data
 import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import seaborn as sns
-
-# Library Sentiment
-
 
 # Library Database Spreadsheet
 import gspread
@@ -36,12 +36,12 @@ def add_data(date_string, answers, average):
     sheet.append_row(row_to_append)
     print("Data Berhasil Ditambahkan!")
 
-# Fungsi untuk mencari nilai Rata-Rata
+# Fungsi untuk mencari nilai Rata-Rata dari data Google Sheets
 def nilai_rata_total(df):
     df['rata-rata'] = df[['perasaan', 'ketenangan', 'tidur', 'produktivitas', 'menikmati']].astype(float).mean(axis=1)
     return df[['date', 'rata-rata']]
 
-# Fungsi untuk mengambil nilai Rata-Rata Total
+# Fungsi untuk mengambil nilai Rata-Rata Total dari data Google Sheets
 def get_total(df):
     kolom_angka = ['perasaan', 'ketenangan', 'tidur', 'produktivitas', 'menikmati', 'rata-rata']
     df[kolom_angka] = df[kolom_angka].apply(pd.to_numeric)
@@ -55,7 +55,7 @@ def get_total(df):
 
     return nilai_harian
 
-# Fungsi untuk menampilkan Pesan
+# Fungsi untuk menampilkan Pesan Peringatan (Skala 1 - 10)
 def show_alert(total_score):
     if total_score <= 1:
         result = "Kamu Sangat Membutuhkan Bantuan :sob:"
@@ -91,7 +91,7 @@ def show_alert(total_score):
         result = "Perasaan Kamu Sangat Luar Biasa Baik :satisfied:"
         st.success(f"{result}")
 
-# Fungsi untuk menampilkan notifikasi
+# Fungsi untuk menampilkan notifikasi pada Halaman / Desktop
 def show_notification():
     while True:
         notification.notify(
@@ -106,7 +106,7 @@ def start_notification():
     thread = threading.Thread(target=show_notification)
     thread.start()
 
-# Halaman Intro
+# Halaman Intro / Beranda
 def intro():
     st.title('Selamat Datang di TATA!')
     st.sidebar.success('Silakan Pilih Menu')
@@ -130,27 +130,35 @@ def intro():
 
 # Halaman Informasi
 def informasi():
-    st.title('Informasi Tentang Mental Health')
-    st.subheader('Pengertian Mental Health')
+    st.header('Informasi Tentang Kesehatan Mental')
+    st.subheader('Pengertian Kesehatan Mental')
     st.write(
         '''
         Kesehatan mental adalah kesehatan yang berkaitan dengan kondisi emosi, kejiwaan, dan psikis seseorang. Perlu kamu ketahui 
         bahwa peristiwa yang memiliki dampak besar pada kepribadian dan perilaku seseorang dapat berpengaruh pada kesehatan 
         mentalnya. Misalnya, pelecehan saat usia dini, stres berat dalam jangka waktu lama tanpa adanya penanganan, dan mengalami 
-        kekerasan dalam rumah tangga. 
+        kekerasan dalam rumah tangga (KDRT). 
         
-        Berbagai kondisi tersebut bisa membuat kondisi kejiwaan seseorang terganggu, sehingga muncul gejala gangguan kesehatan jiwa. 
+        Berbagai kondisi tersebut dapat membuat kondisi kejiwaan seseorang menjadi terganggu, sehingga muncul gejala gangguan kesehatan jiwa. 
         Akan tetapi, masalah kesehatan mental dapat dengan mudah mengubah cara seseorang dalam mengatasi stres, komunikasi dengan 
         orang lain, membuat pilihan, dan memicu hasrat untuk menyakiti diri sendiri. Beberapa jenis gangguan mental yang umum terjadi 
         antara lain depresi, gangguan bipolar, kecemasan, gangguan stres pasca trauma (PTSD), gangguan obsesif kompulsif (OCD), 
-        dan psikosis. Selain itu, ada beberapa penyakit mental hanya terjadi pada jenis pengidap tertentu, seperti postpartum depression 
-        hanya menyerang ibu setelah melahirkan.
+        dan psikosis. Selain itu, ada beberapa penyakit mental hanya terjadi pada jenis pengidap tertentu seperti postpartum depression yang 
+        hanya menyerang wanita setelah melahirkan.
         '''
     )
 
     st.subheader('Skala Kesehatan Mental')
     image = Image.open('./img/mental_health_score.png')
     st.image(image, caption='Skala Kesehatan Mental')
+    st.write(
+        '''
+        Dapat dilihat pada gambar tersebut bahwa skala kesehatan mental dapat diukur dalam 10 skala. Mulai dari skala 1 yang menandakan
+        bahwa seseorang sedang mengalami gangguan kesehatan mental yang sangat parah sehingga sangat memerlukan bantuan orang yang ahli agar
+        tidak terjadi hal yang tidak diinginkan. Kemudian terdapat skala 10 yang menandakan bahwa seseorang tidak sedang mengalami gangguan
+        kesehatan mental sehingga hidupnya aman, damai, dan tenteram.
+        '''
+    )
 
 # Halaman Dataset
 def dataset():
@@ -477,34 +485,39 @@ def visualisasi():
     st.info('Scroll Ke Bawah Untuk Melihat Hasil Selengkapnya')
     st.dataframe(df)
 
-    fig1 = px.line(df, x="date", y="rata-rata", line_shape="spline", color_discrete_sequence=["red"])
-    fig1.update_layout(xaxis_tickformat='%Y-%m-%d', title="Rata-Rata Skor Kesehatan Mental per Hari")
-    st.plotly_chart(fig1)
+    with st.expander('Rata-Rata Skor Kesehatan Mental per Hari'):
+        fig1 = px.line(df, x="date", y="rata-rata", line_shape="spline", color_discrete_sequence=["red"])
+        fig1.update_layout(xaxis_tickformat='%Y-%m-%d', title="Rata-Rata Skor Kesehatan Mental per Hari")
+        
+        if fig1:
+            st.plotly_chart(fig1)
+        else:
+            st.error("Gagal membuat grafik. Pastikan data yang digunakan sesuai.")
 
-    fig2 = px.line(df, x="date", y=["perasaan", "ketenangan", "tidur", "produktivitas", "menikmati"], line_shape="spline")
-    fig2.update_layout(xaxis_tickformat='%Y-%m-%d', title="Skor Kesehatan Mental per Hari")
-    st.plotly_chart(fig2)
 
-    average_scores = nilai_rata_total(df)
-    fig3 = px.bar_polar(average_scores, r="rata-rata", theta="date", template="plotly_dark")
-    fig3.update_traces(opacity=0.7)
-    fig3.update_layout(title="Rata-Rata Kesehatan Mental per Kategori")
-    st.plotly_chart(fig3)
+    with st.expander('Skor Kesehatan Mental per Hari'):
+        fig2 = px.line(df, x="date", y=["perasaan", "ketenangan", "tidur", "produktivitas", "menikmati"], line_shape="spline")
+        fig2.update_layout(xaxis_tickformat='%Y-%m-%d', title="Skor Kesehatan Mental per Hari")
 
-    # Mengatur urutan kolom sesuai dengan urutan di database
-    column_order = ['date', 'perasaan', 'ketenangan', 'tidur', 'produktivitas', 'menikmati', 'rata-rata']
-    df = df.reindex(columns=column_order)
-    average_scores = get_total(df)
-    st.subheader('Nilai Rata-Rata Harian dan Total Rata-Rata')
-    st.write(average_scores)
+        if fig2:
+            st.plotly_chart(fig2)
+        else:
+            st.error("Gagal membuat grafik. Pastikan data yang digunakan sesuai.")
 
+    with st.expander('Rata-Rata Kesehatan Mental per Kategori'):
+        average_scores = nilai_rata_total(df)
+        fig3 = px.bar_polar(average_scores, r="rata-rata", theta="date", template="plotly_dark")
+        fig3.update_traces(opacity=0.7)
+        fig3.update_layout(title="Rata-Rata Kesehatan Mental per Kategori")
+
+        if fig3:
+            st.plotly_chart(fig3)
+        else:
+            st.error("Gagal membuat grafik. Pastikan data yang digunakan sesuai.")
+    
     df['rata-rata'] = df.mean(axis=1)
     total_average = df['rata-rata'].mean()
     show_alert(total_average)
-    
-    fig1 = px.line(df, x="date", y="rata-rata", line_shape="spline", color_discrete_sequence=["red"])
-    fig1.update_layout(xaxis_tickformat='%Y-%m-%d', title="Rata-Rata Skor Kesehatan Mental per Hari")
-    st.plotly_chart(fig1)
     return total_average
 
 
