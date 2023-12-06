@@ -1,6 +1,6 @@
 # Import Library Python
 import streamlit as st
-import datetime as dt
+from datetime import datetime as dt
 from PIL import Image
 
 # Konfigurasi Icon dan Judul Halaman
@@ -157,6 +157,21 @@ def informasi():
         bahwa seseorang sedang mengalami gangguan kesehatan mental yang sangat parah sehingga sangat memerlukan bantuan orang yang ahli agar
         tidak terjadi hal yang tidak diinginkan. Kemudian terdapat skala 10 yang menandakan bahwa seseorang tidak sedang mengalami gangguan
         kesehatan mental sehingga hidupnya aman, damai, dan tenteram.
+        '''
+    )
+
+    st.subheader('Peran Vital Psikologi dalam Menangani Gangguan Kesehatan Mental pada Generasi Milenial')
+    st.write(
+        '''
+        Gangguan kesehatan mental menjadi salah satu tantangan serius yang dihadapi oleh generasi milenial saat ini. Psikologi telah menjadi fokus 
+        utama dalam membantu mereka mengatasi dan mengelola tantangan ini. Dalam penelitian yang dilakukan oleh Nurwulan Sari dan Sanusi (2023), 
+        berbagai pandangan memberikan wawasan yang mendalam tentang bagaimana psikologi dapat berperan dalam mendukung penyintas gangguan kesehatan mental.
+        Pandangan tersebut menggambarkan sudut pandang yang berbeda dalam memahami peran psikologi. Menurut pandangan tersebut, psikologi bukan hanya 
+        sebatas alat untuk menyampaikan pesan, tetapi juga sebagai kunci penting dalam membina hubungan yang efektif dan membangun pemahaman yang mendalam 
+        antara komunikator dan komunikan. Salah satu aspek penting yang ditekankan adalah pentingnya menggunakan bahasa yang baik dan mampu dipahami oleh 
+        penyintas gangguan kesehatan mental. Dapat disimpulkan bahwa pesan yang jelas dan bahasa yang tepat menjadi kunci dalam membantu mereka berinteraksi secara efektif dalam masyarakat. 
+
+        _[ Nurwulan Sari, R., & Sanusi, N. (2023). Penerapan Psikologi Komunikasi dalam Mengatasi Gangguan Kesehatan Mental pada Generasi Milenial. Jurnal Penelitian Dan Studi Ilmu Komunikasi, 4(1). http://jurnal.usbypkp.ac.id/index.php/buanakomunikasi ]_     
         '''
     )
 
@@ -409,7 +424,11 @@ def dataset2():
 
 # Halaman Kuisioner
 def pertanyaan():
-    from datetime import datetime as dt
+    st.write("")
+    st.write("Apakah Anda ingin mengaktifkan notifikasi pengingat?")
+    if st.button('Aktifkan Notifikasi'):
+        start_notification()
+        st.toast('Notifikasi telah diaktifkan!')
 
     st.title("Kuisioner Kesehatan Mental")
     questions = [
@@ -458,12 +477,6 @@ def pertanyaan():
         add_data(date_string, answers, average)
         st.success("Skor Kesehatan Mental Kamu Telah Berhasil Di Kirim!", TimeoutError)
         st.toast("Terkirim!")
-
-    st.write("")
-    st.write("Apakah Anda ingin mengaktifkan notifikasi pengingat?")
-    if st.button('Aktifkan Notifikasi'):
-        start_notification()
-        st.toast('Notifikasi telah diaktifkan!')
 
     return answers
 
@@ -581,64 +594,65 @@ def diskusi():
 def bundir():
     st.title('Kamu Tidak Sendiri')
     st.write(
-        'If you or someone you know is having a hard time, help is always available.')
+        'Jika kamu ataupun orang lain sedang mengalami hari yang buruk, ingat bantuan akan selalu tersedia.')
 
-    with st.expander('View Resources'):
+    with st.expander('Lihat Sumber Daya'):
         st.write(
             '''
-            ## Talk to a professional
-            If you or someone you know is going through a difficult time, here are some resources that may help.
-
-            Layanan 24/7 Kementerian Kesehatan Republik Indonesia
+            ## Berbicara dengan seorang profesional
+            Jika kamu ataupun orang lain sedang mengalami fase terburuk, berikut adalah beberapa sumber daya yang mungkin dapat membantu.
             ''')
+        image2 = Image.open('./img/logo_kemenkes.jpg')
+        st.image(image2, caption='Kementerian Kesehatan Republik Indonesia')
+        st.write('Layanan 24/7 Kementerian Kesehatan Republik Indonesia')
         st.link_button("119", "https://wa.me/6281110500567")
         st.link_button(
             "Kontak", "https://www.kemkes.go.id/id/layanan/kontak-kami")
 
-    st.title('Tips and Support')
-    with st.expander('Talk to someone you trust'):
+    st.title('Tips dan Dukungan')
+    with st.expander('Bicaralah dengan seseorang yang kamu percayai'):
         st.write(
             '''
-            - We understand that asking for help or opening up about how you are feeling can be really difficult. However, just talking to one person you trust can make you feel much better.
-            - Let a trusted friend or family member know about what you’re going through. Describe how you feel, what’s happened, and what support you think might be helpful. Don’t be afraid to ask for help.
+            - Tidak jarang kamu merasa sulit untuk meminta bantuan atau membuka diri tentang perasaan yang kamu alami. Namun, hanya dengan berbicara kepada satu orang yang kamu percayai dapat membuat kamu merasa jauh lebih baik.
+            - Beritahukanlah kepada seorang teman atau anggota keluarga yang kamu percayai tentang apa yang kamu alami. Gambarkan bagaimana perasaan kamu, apa yang telah terjadi, dan dukungan apa yang menurut kamu akan membantu. Jangan ragu untuk meminta pertolongan.
             ''')
-    with st.expander('Take time out'):
+    with st.expander('Luangkan Waktu'):
         st.write(
             '''
-            - Taking slow, deep breaths can help you feel less tension in your mind and body. Try slowly counting to 4 while you breathe in through your nose, hold that breath and count to 7, and then count to 8 as you breathe out through your mouth.
-            - Focus on the here and now. An easy way to do this is name 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell and 1 thing you can taste.
-            - Try splashing some ice water on your face, or opening your windows to breathe in some cool fresh air. This could help calm your nervous system.
-            - Journal your thoughts. If you don’t know where to start, try writing it as if you’re telling someone that you trust.
+            - Mengambil napas secara perlahan dapat membantu kamu merasa lebih rileks secara fisik dan pikiran. Cobalah menghitung perlahan hingga angka 4 saat kamu menghirup udara melalui hidungmu, kemudian tahan napas tersebut dan hitung hingga angka 7. Lalu hitung hingga angka 8 saat kamu mengeluarkan napas melalui mulut.
+            - Berlatih untuk dapat fokus. Cara yang paling mudah untuk melakukannya adalah menyebutkan 5 hal yang bisa kamu lihat, 4 hal yang bisa kamu sentuh, 3 hal yang bisa kamu dengar, 2 hal yang bisa kamu cium, dan 1 hal yang bisa kamu rasakan.
+            - Cobalah semprotkan sedikit air es ke wajahmu atau buka jendela ruanganmu untuk menghirup udara segar yang sejuk. Hal ini dapat membantu menenangkan sistem sarafmu.
+            - Catatlah apa yang ada di dalam pikiranmu. Jika kamu tidak tahu harus mulai dari mana, coba tuliskan seolah-olah kamu sedang bercerita kepada seseorang yang kamu percayai.
             ''')
-    with st.expander('Explore activities that make you happy'):
+    with st.expander('Jelajahi kegiatan yang membuatmu bahagia'):
         st.write(
             '''
-            - Take a walk outside, explore nature, and enjoy some fresh air. You could also just stay inside and dance to a song you love.
-            - Watch your favorite movie, hang out with a friend, read a book, treat yourself to a snack, or put together a music playlist.
-            - Try to make sure you’re getting enough sleep, exercising regularly, and eating well.
+            - Berjalan di luar, menjelajahi alam, dan menikmati udara segar. Kamu juga bisa hanya tinggal di dalam ruangan dan menari mengikuti lagu yang kamu sukai.
+            - Menonton film favoritmu, menghabiskan waktu bersama teman, membaca buku, memanjakan diri dengan camilan, atau membuat daftar putar musik.
+            - Pastikan kamu mendapatkan cukup tidur, berolahraga secara teratur, dan makan dengan baik.
             ''')
-    with st.expander('Connect with the world around you'):
+    with st.expander('Terhubunglah dengan dunia di sekitarmu'):
         st.write(
             '''
-            - Call someone that you haven’t spoken to in a while.
-            - Find out more about a local or online interest or volunteer group that you could join to meet new people.
-            - Take a class or start a hobby that you’ve always wanted to try, like a new sport or a creative activity.
+            - Telepon seseorang yang sudah lama tidak kamu temui.
+            - Temukan lebih banyak tentang kelompok minat atau relawan lokal yang bisa kamu ikuti untuk bertemu dengan orang baru.
+            - Ikuti kelas atau mulai hobi yang selama ini ingin kamu coba, seperti olahraga baru atau kegiatan kreatif.
             ''')
-    with st.expander('Reflect on what’s important to you'):
+    with st.expander('Renungkan tentang hal-hal penting bagimu'):
         st.write(
             '''
-            - Write down 5 people or things that make you feel happy, thankful or safe.
-            - Reach out to someone you’re thankful for and tell them how much you appreciate them.
+            - Tulis 5 orang atau hal yang membuatmu merasa bahagia, bersyukur, atau aman.
+            - Sampaikan rasa terima kasihmu kepada seseorang yang kamu hargai dan beritahu mereka seberapa besar kamu menghargai mereka.
             ''')
 
 # Konfigurasi Halaman
 nama_halaman = {
     'Beranda': intro,
     'Informasi Umum': informasi,
-    'Hasil Survei': dataset,
-    'Data Mahasiswa': dataset2,
-    'Kuisioner': pertanyaan,
-    'Visualisasi': visualisasi,
+    'Data Hasil Survei': dataset,
+    'Data Hasil Mahasiswa': dataset2,
+    'Pengisian Kuisioner': pertanyaan,
+    'Visualisasi Data Kuisioner': visualisasi,
     'Forum Diskusi': diskusi,
     'Help Center': bundir
 }
