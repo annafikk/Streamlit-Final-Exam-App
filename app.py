@@ -501,7 +501,12 @@ def visualisasi():
     df['rata-rata'] = df.mean(axis=1)
     total_average = df['rata-rata'].mean()
     show_alert(total_average)
+    
+    fig1 = px.line(df, x="date", y="rata-rata", line_shape="spline", color_discrete_sequence=["red"])
+    fig1.update_layout(xaxis_tickformat='%Y-%m-%d', title="Rata-Rata Skor Kesehatan Mental per Hari")
+    st.plotly_chart(fig1)
     return total_average
+
 
 from transformers import pipeline
 sentiment_analysis = pipeline("sentiment-analysis")
