@@ -10,7 +10,7 @@ plotly-express
 seaborn
 plyer
 st-gsheets-connection
-transformers
+transformers==4.34.0
 google-api-core==2.14.0
 google-api-python-client==2.108.0
 google-auth==2.23.0
