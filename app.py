@@ -180,7 +180,7 @@ def informasi():
 
 # Halaman Dataset
 def dataset():
-    st.cache_data
+    @st.cache_data
     def load_data():
         df = pd.read_csv("dataset\survey.csv")
         return df
