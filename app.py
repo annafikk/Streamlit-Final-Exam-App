@@ -15,7 +15,8 @@ import seaborn as sns
 
 # Library Database Spreadsheet
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+# from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2 import service_account
 
 # Library Notifikasi
 import time
@@ -25,7 +26,7 @@ from plyer import notification
 # Fungsi untuk menambah dan mengambil data ke Google Sheets
 def add_data(date_string, answers, average):
     scope = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
+    creds = service_account.Credentials.from_service_account_file('mental-health-406315-152f944215eb.json', scope)
     client = gspread.authorize(creds)
 
     url = "https://docs.google.com/spreadsheets/d/16U04JNWR9Qaib0zoxmzwUtxfYusexja7VYQdatsbmNQ/edit?usp=sharing"
@@ -484,7 +485,7 @@ def pertanyaan():
 def visualisasi():
     st.cache_data
     scope = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
+    creds = service_account.Credentials.from_service_account_file('mental-health-406315-152f944215eb.json', scope)
     client = gspread.authorize(creds)
 
     url = "https://docs.google.com/spreadsheets/d/16U04JNWR9Qaib0zoxmzwUtxfYusexja7VYQdatsbmNQ/edit?usp=sharing"
@@ -558,7 +559,7 @@ def diskusi():
             sentiment = analyze_sentiment(userinput)
 
             scope = ['https://www.googleapis.com/auth/spreadsheets']
-            creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
+            creds = service_account.Credentials.from_service_account_file('mental-health-406315-152f944215eb.json', scope)
             client = gspread.authorize(creds)
 
             url = "https://docs.google.com/spreadsheets/d/16U04JNWR9Qaib0zoxmzwUtxfYusexja7VYQdatsbmNQ/edit?usp=sharing"
@@ -572,7 +573,7 @@ def diskusi():
     # Menampilkan pesan yang telah dikirim oleh pengguna sebelumnya
     st.subheader('Pesan yang Telah Dikirim')
     scope = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('mental-health-406315-152f944215eb.json', scope)
+    creds = service_account.Credentials.from_service_account_file('mental-health-406315-152f944215eb.json', scope)
     client = gspread.authorize(creds)
 
     url = "https://docs.google.com/spreadsheets/d/16U04JNWR9Qaib0zoxmzwUtxfYusexja7VYQdatsbmNQ/edit?usp=sharing"
