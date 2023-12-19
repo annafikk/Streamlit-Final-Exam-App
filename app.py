@@ -182,7 +182,9 @@ def informasi():
 def dataset():
     @st.cache_data
     def load_data():
-        df = pd.read_csv("dataset\\survey.csv")
+        url = 'https://raw.githubusercontent.com/annafikk/Streamlit-Final-Exam-App/main/dataset/student-mental-health.csv'
+        df = pd.read_csv(url)
+        # df = pd.read_csv("dataset\\survey.csv")
         return df
 
     # Memuat dan Menampilkan Dataset
