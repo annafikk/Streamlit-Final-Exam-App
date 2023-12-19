@@ -182,7 +182,7 @@ def informasi():
 def dataset():
     @st.cache_data
     def load_data():
-        df = pd.read_csv("survey.csv")
+        df = pd.read_csv('survey.csv')
         return df
 
     # Memuat dan Menampilkan Dataset
@@ -317,7 +317,7 @@ def dataset():
 def dataset2():
     @st.cache_data
     def load_data():
-        df = pd.read_csv("student-mental-health.csv")
+        df = pd.read_csv('student-mental-health.csv')
         return df
 
     # Memuat dan Menampilkan Dataset
