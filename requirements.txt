@@ -3,6 +3,7 @@ pandas
 numpy
 matplotlib
 plotly==5.11.0
+oauth2client
 plotly-express
 seaborn
 plyer
