@@ -315,7 +315,7 @@ def dataset():
         st.pyplot(fig)
 
 def dataset2():
-    st.cache_data
+    @st.cache_data
     def load_data():
         df = pd.read_csv("student-mental-health.csv")
         return df
