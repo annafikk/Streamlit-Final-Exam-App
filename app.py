@@ -2,7 +2,6 @@
 import streamlit as st
 from datetime import datetime as dt
 from PIL import Image
-import os.path
 
 # Konfigurasi Icon dan Judul Halaman
 st.set_page_config(page_icon=':mending_heart:', page_title='TATA')
@@ -183,10 +182,7 @@ def informasi():
 def dataset():
     @st.cache_data
     def load_data():
-        dir_name = os.path.abspath(os.path.dirname(__file__))
-        location = os.path.join(dir_name, 'dataset\survey.csv')
-        df = pd.read_csv(location)
-        df = df[['Age', 'Gender', 'Country', 'treatment', 'seek_help', 'mental_health_consequence']]
+        df = pd.read_csv("dataset\\survey.csv")
         return df
 
     # Memuat dan Menampilkan Dataset
@@ -195,7 +191,7 @@ def dataset():
     st.write(data)
 
     # Mengubah kolom Timestamp menjadi tipe data datetime
-    # data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+    data['Timestamp'] = pd.to_datetime(data['Timestamp'])
 
     # =========================================> Filter
     selected_columns = ['Age', 'Gender', 'Country', 'treatment', 'seek_help', 'mental_health_consequence']
