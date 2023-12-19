@@ -2,6 +2,8 @@ streamlit>=1.28
 pandas
 numpy
 matplotlib
+plotly
+plotly-express
 seaborn
 plyer
 st-gsheets-connection
