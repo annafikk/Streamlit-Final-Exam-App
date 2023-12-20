@@ -1,3 +1,8 @@
+# Dibuat Oleh :
+# Nama      : Muhammad Hanif Annafi'
+# NIM       : 21537141009
+# Matkul    : Aplikasi Web
+
 # Import Library Python
 import streamlit as st
 from datetime import datetime as dt

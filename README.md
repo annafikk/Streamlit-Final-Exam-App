@@ -1,6 +1,7 @@
 # Final-Exam-Web-Application
 
 ## Tugas Akhir Mata Kuliah Aplikasi Web
+# By Muhammad Hanif Annafi
 
 ## Analisis Kesehatan Mental Menggunakan Streamlit Dengan Metode Analisis Time Series dan Metode NLP
 
@@ -59,4 +60,11 @@ Membuat Virtual Environment:
       streamlit hello
       ```
 Halaman yang Tersedia:
-1. Still In Development
+1. Beranda
+2. Informasi Umum
+3. Data Hasil Survei
+4. Data Hasil Mahasiswa
+5. Pengisian Kuisioner
+6. Visualisasi Data Kuisioner
+7. Forum Diskusi
+8. Help Center
