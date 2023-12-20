@@ -182,7 +182,7 @@ def informasi():
 def dataset():
     @st.cache_data
     def load_data():
-        url = 'dataset\survey.csv'
+        url = './dataset/survey.csv'
         df = pd.read_csv(url)
         return df
 
@@ -318,7 +318,7 @@ def dataset():
 def dataset2():
     @st.cache_data
     def load_data():
-        url = 'dataset\student-mental-health.csv'
+        url = './dataset/student-mental-health.csv'
         df = pd.read_csv(url)
         return df
 
@@ -480,7 +480,7 @@ def pertanyaan():
         date_string = now.strftime('%d/%m/%Y')
         st.write(f"Date: {date_string}")
         add_data(date_string, answers, average)
-        st.success("Skor Kesehatan Mental Kamu Telah Berhasil Di Kirim!", TimeoutError)
+        st.success("Skor Kesehatan Mental Kamu Telah Berhasil Di Kirim!")
         st.toast("Terkirim!")
 
     return answers
